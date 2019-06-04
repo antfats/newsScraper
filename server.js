@@ -22,6 +22,7 @@ mongoose.connect("mongodb://localhost/newsScraper", { useNewUrlParser: true });
 
 
 app.get("/scrape", function (req, res) {
+    const newRes = (response.length) * (.75);
 
     axios.get("https://www.marketwatch.com/").then(function (response) {
         const $ = cheerio.load(response.data);
@@ -45,6 +46,7 @@ app.get("/scrape", function (req, res) {
         });
     });
 });
+
 app.get("/news", function (req, res) {
     db.News.find({})
         .then(function (dbNews) {
@@ -54,6 +56,28 @@ app.get("/news", function (req, res) {
         });
 });
 
+app.get("/news/:id", function (req, res) {
+    db.News.findOne({ _id: req.params.id })
+        .populate("note")
+        .then(function (dbNews) {
+            res.json(dbNews);
+        }).catch(function (err) {
+            res.json(err);
+        });
+});
+
+app.post("/news/:id", function (req, res) {
+    db.Note.create(req.body)
+        .then(function (dbNote) {
+            return db.News.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true })
+                .then(function (dbNews) {
+                    res.json(dbNews);
+                })
+                .catch(function (err) {
+                    res.json(err);
+                });
+        });
+});
 app.listen(PORT, function () {
     console.log("App is running on port: " + PORT);
-})
+});
