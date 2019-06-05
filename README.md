@@ -1,1 +1,1 @@
-# newsScraper
+I had the note's partly working. They would show up but really buggy when you would click the text box to input a note. 

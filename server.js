@@ -20,9 +20,8 @@ app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost/newsScraper", { useNewUrlParser: true });
 
-
+//Router for /scrape. Scraping the site for all the (a) children of h3
 app.get("/scrape", function (req, res) {
-    const newRes = (response.length) * (.75);
 
     axios.get("https://www.marketwatch.com/").then(function (response) {
         const $ = cheerio.load(response.data);
@@ -46,7 +45,7 @@ app.get("/scrape", function (req, res) {
         });
     });
 });
-
+//Create a json of all the news articles scraped
 app.get("/news", function (req, res) {
     db.News.find({})
         .then(function (dbNews) {
@@ -55,7 +54,7 @@ app.get("/news", function (req, res) {
             res.json(err);
         });
 });
-
+//find a specific news article 
 app.get("/news/:id", function (req, res) {
     db.News.findOne({ _id: req.params.id })
         .populate("note")
