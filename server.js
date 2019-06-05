@@ -18,7 +18,10 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/newsScraper", { useNewUrlParser: true });
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 //Router for /scrape. Scraping the site for all the (a) children of h3
 app.get("/scrape", function (req, res) {
